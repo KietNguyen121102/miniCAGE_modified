@@ -9,9 +9,14 @@ import numpy as np
 from gymnasium import spaces
 import sys, os
 
-sys.path.append(os.path.expanduser("~/Documents/Coding/CybORG_plus_plus"))
-from mini_CAGE.minimal import SimplifiedCAGE, HOSTS
-from mini_CAGE.red_bline_agent import B_line_minimal
+# Add parent directory to path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+from minimal import SimplifiedCAGE, HOSTS
+from red_bline_agent import B_line_minimal
 
 
 class IPPOSharedObsEnv:

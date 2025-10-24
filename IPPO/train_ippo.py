@@ -8,6 +8,8 @@ import os
 import time
 from datetime import datetime
 from pathlib import Path
+import random
+from multiprocessing import Process, set_start_method
 import numpy as np
 import torch
 import torch.nn as nn
@@ -16,7 +18,8 @@ from torch.distributions import Categorical
 from multi_agent_ippo_wrapper import IPPOSharedObsEnv
 
 # Training Config
-TOTAL_TIMESTEPS: int = 1_000_000_00
+NUM_RUNS: int = 1  # Number of parallel training runs
+TOTAL_TIMESTEPS: int = 2000000
 N_ENVS: int = 8  # Number of parallel environments
 N_STEPS: int = 2048  # Steps per rollout
 BATCH_SIZE: int = 256
@@ -33,7 +36,8 @@ USE_WANDB: bool = True
 WANDB_PROJECT: str = "mini-cage-ippo"
 GROUP_NAME: str = f"SharedObs_IPPO_2Blue_{TOTAL_TIMESTEPS}"
 
-SAVE_DIR: Path = Path("ppo_models") / GROUP_NAME
+# Save to parent directory (mini_CAGE/ppo_models)
+SAVE_DIR: Path = Path(__file__).parent.parent / "ppo_models" / GROUP_NAME
 SAVE_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -120,19 +124,34 @@ class RolloutBuffer:
         return returns, advantages
 
 
-def train_ippo():
-    """Main IPPO training loop."""
+def train_ippo(run_idx: int):
+    """Main IPPO training loop.
+    
+    Args:
+        run_idx: Index for this training run, used as seed for reproducibility
+    """
+    
+    # Set random seeds for reproducibility
+    seed = run_idx
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Using device: {device}")
+    print(f"Run {run_idx}: Using device: {device}")
+    print(f"Run {run_idx}: Global seed: {seed}")
     
     # Initialize W&B
     if USE_WANDB:
         import wandb
+        time_tag = datetime.now().strftime("%Y%m%d_%H%M%S")
         run = wandb.init(
             project=WANDB_PROJECT,
             group=GROUP_NAME,
-            name=f"ippo_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=f"ippo_run_{time_tag}_{run_idx}",
             config={
                 "total_timesteps": TOTAL_TIMESTEPS,
                 "n_envs": N_ENVS,
@@ -145,18 +164,22 @@ def train_ippo():
                 "clip_range": CLIP_RANGE,
                 "num_agents": 2,
                 "shared_observation": True,
+                "seed": seed,
             },
             sync_tensorboard=False,
         )
     
     # Create environments
-    envs = [IPPOSharedObsEnv(
-        red_policy="bline", 
-        max_steps=100, 
-        remove_bugs=True, 
-        seed=i,
-        action_resolution="sequential"  # Try "sequential", "first_valid", or "both"
-    ) for i in range(N_ENVS)]
+    envs = []
+    for i in range(N_ENVS):
+        env = IPPOSharedObsEnv(
+            red_policy="bline", 
+            max_steps=100, 
+            remove_bugs=True, 
+            seed=seed + i,
+            action_resolution="sequential"  # Try "sequential", "first_valid", or "both"
+        )
+        envs.append(env)
     
     # Get dimensions (same for both agents now)
     num_agents = 2
@@ -452,10 +475,26 @@ def train_ippo():
             'global_step': global_step,
         }, save_path)
     
-    print("\nTraining completed!")
+    print(f"\nRun {run_idx}: Training completed!")
     if USE_WANDB:
         wandb.finish()
 
 
 if __name__ == "__main__":
-    train_ippo()
+    try:
+        set_start_method("spawn")  # does nothing if already set
+    except RuntimeError:
+        pass
+
+    START_IDX = 21
+    processes: list[Process] = []
+    for idx in range(START_IDX, START_IDX + NUM_RUNS):
+        p = Process(target=train_ippo, args=(idx,), daemon=False)
+        p.start()
+        processes.append(p)
+
+    # Wait for all workers to complete
+    for p in processes:
+        p.join()
+
+    print("\n All runs finished!")
