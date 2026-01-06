@@ -79,26 +79,19 @@ REWARDED_EXPLOITS = [
 # what decoy options are available for each host
 # ordered based on the Cardiff implementation
 HOST_DECOYS = [
-
-    # ent
-    # ['Haraka', 'Tomcat', 'Apache', 'Vsftpd'],
-    [],
-    ['Haraka', 'Tomcat', 'Vsftpd', 'Apache'],
-    ['Femitter'],
-    ['Femitter'],
-
-    # op
-    [],
-    [],
-    [],
-    ['Haraka', 'Apache', 'Tomcat', 'Vsftpd'],
-
-    # user
-    [],
-    ['Apache', 'Tomcat', 'SMSS', 'Svchost'],
-    ['Femitter', 'Tomcat', 'Apache', 'SSHD'],
-    ['Vsftpd', 'SSHD'],
-    ['Vsftpd']
+    ['SSHD'],  # def
+    ['Haraka', 'Tomcat', 'Vsftpd', 'Apache', 'SSHD'],  # ent0
+    ['Femitter', 'SSHD', 'SMSS', 'Svchost', 'Vsftpd', 'Tomcat'],  # ent1
+    ['Femitter', 'SSHD', 'SMSS', 'Svchost', 'Vsftpd', 'Tomcat'],  # ent2
+    ['SSHD'],  # ophost0
+    ['SSHD'],  # ophost1
+    ['SSHD'],  # ophost2
+    ['Haraka', 'Apache', 'Tomcat', 'Vsftpd', 'SSHD'],  # opserv
+    [],  # user0
+    ['Apache', 'Tomcat', 'SMSS', 'Svchost', 'SSHD', 'Femitter'],  # user1
+    ['Femitter', 'Tomcat', 'Apache', 'SSHD', 'SMSS', 'Svchost'],  # user2
+    ['Vsftpd', 'SSHD', 'Svchost', 'Tomcat', 'Apache', 'Haraka'],  # user3
+    ['Vsftpd', 'Svchost', 'Tomcat', 'Apache', 'Haraka'],  # user4
 ]
 
 # list all the decoy and exploit options

@@ -1,0 +1,201 @@
+================================================================================
+MULTI-EXPLOIT IPPO - ACTION DISTRIBUTION COMPARISON REPORT
+================================================================================
+
+PERFORMANCE SUMMARY
+------------------------------------------------------------
+Variant                    Mean Reward        Std         Actions
+------------------------------------------------------------
+shared                          -24.86      24.97      [144, 144]
+restricted                      -38.65       1.31       [40, 118]
+decoy_specialized               -33.72      17.76        [92, 66]
+
+
+============================================================
+SHARED
+============================================================
+
+Action Dimensions: [144, 144]
+Mean Reward: -24.86 ± 24.97
+Mean Episode Length: 100.00
+
+--- Agent 0 (Full Actions) ---
+
+Action Types:
+  sleep     :      0 (  0.0%)
+  analyse   :      4 (  0.0%)
+  decoy     :    243 (  2.4%)
+  remove    :     10 (  0.1%)
+  restore   :   9743 ( 97.4%)
+
+Decoy Types:
+  Tomcat    :     74 ( 30.5%)
+  SSHD      :     66 ( 27.2%)
+  SMSS      :     62 ( 25.5%)
+  Femitter  :     21 (  8.6%)
+  Haraka    :     13 (  5.3%)
+  Apache    :      5 (  2.1%)
+  Vsftpd    :      2 (  0.8%)
+
+--- Agent 1 (Full Actions) ---
+
+Action Types:
+  sleep     :      0 (  0.0%)
+  analyse   :   2455 ( 24.6%)
+  decoy     :   4006 ( 40.1%)
+  remove    :    104 (  1.0%)
+  restore   :   3435 ( 34.4%)
+
+Decoy Types:
+  Haraka    :   2285 ( 57.0%)
+  SSHD      :   1613 ( 40.3%)
+  SMSS      :     50 (  1.2%)
+  Femitter  :     28 (  0.7%)
+  Vsftpd    :     27 (  0.7%)
+  Apache    :      3 (  0.1%)
+
+--- Red Agent ---
+
+Action Types:
+  sleep          :      0 (  0.0%)
+  subnet_scan    :    100 (  1.0%)
+  network_scan   :    172 (  1.7%)
+  exploit        :   9411 ( 94.1%)
+  escalate       :    317 (  3.2%)
+  impact         :      0 (  0.0%)
+
+Exploit Types:
+  Brute     :   6070 ( 64.5%)
+  Eternal   :   1982 ( 21.1%)
+  Haraka    :   1137 ( 12.1%)
+  FTP       :    222 (  2.4%)
+
+Top Targeted Hosts:
+  ent1           :   4017
+  ent0           :   2125
+  user2          :   2070
+  user3          :    792
+  user4          :    636
+
+============================================================
+RESTRICTED
+============================================================
+
+Action Dimensions: [40, 118]
+Mean Reward: -38.65 ± 1.31
+Mean Episode Length: 100.00
+
+--- Agent 0 (Defender) ---
+
+Action Types:
+  sleep     :      0 (  0.0%)
+  analyse   :    213 (  2.1%)
+  decoy     :      0 (  0.0%)
+  remove    :   9758 ( 97.6%)
+  restore   :     29 (  0.3%)
+
+Decoy Types:
+  (no decoys)
+
+--- Agent 1 (Decoy Manager) ---
+
+Action Types:
+  sleep     :      0 (  0.0%)
+  analyse   :     11 (  0.1%)
+  decoy     :   9989 ( 99.9%)
+  remove    :      0 (  0.0%)
+  restore   :      0 (  0.0%)
+
+Decoy Types:
+  Haraka    :   3695 ( 37.0%)
+  Svchost   :   2831 ( 28.3%)
+  Tomcat    :   1671 ( 16.7%)
+  SMSS      :    816 (  8.2%)
+  SSHD      :    565 (  5.7%)
+  Vsftpd    :    345 (  3.5%)
+  Apache    :     66 (  0.7%)
+
+--- Red Agent ---
+
+Action Types:
+  sleep          :      0 (  0.0%)
+  subnet_scan    :    100 (  1.0%)
+  network_scan   :    200 (  2.0%)
+  exploit        :   9599 ( 96.0%)
+  escalate       :    101 (  1.0%)
+  impact         :      0 (  0.0%)
+
+Exploit Types:
+  Brute     :   9332 ( 97.2%)
+  Haraka    :    201 (  2.1%)
+  Eternal   :     42 (  0.4%)
+  FTP       :     24 (  0.3%)
+
+Top Targeted Hosts:
+  ent1           :   4746
+  ent0           :   4686
+  user4          :    231
+  user2          :     94
+  user3          :     72
+
+============================================================
+DECOY_SPECIALIZED
+============================================================
+
+Action Dimensions: [92, 66]
+Mean Reward: -33.72 ± 17.76
+Mean Episode Length: 100.00
+
+--- Agent 0 (Defender + Decoys A) ---
+
+Action Types:
+  sleep     :      0 (  0.0%)
+  analyse   :      0 (  0.0%)
+  decoy     :   5063 ( 50.6%)
+  remove    :      0 (  0.0%)
+  restore   :   4937 ( 49.4%)
+
+Decoy Types:
+  Vsftpd    :   4501 ( 88.9%)
+  Femitter  :    387 (  7.6%)
+  Apache    :    175 (  3.5%)
+
+--- Agent 1 (Support + Decoys B) ---
+
+Action Types:
+  sleep     :      0 (  0.0%)
+  analyse   :   7064 ( 70.6%)
+  decoy     :   2936 ( 29.4%)
+  remove    :      0 (  0.0%)
+  restore   :      0 (  0.0%)
+
+Decoy Types:
+  SMSS      :   2188 ( 74.5%)
+  SSHD      :    675 ( 23.0%)
+  Svchost   :     73 (  2.5%)
+
+--- Red Agent ---
+
+Action Types:
+  sleep          :      0 (  0.0%)
+  subnet_scan    :    100 (  1.0%)
+  network_scan   :    198 (  2.0%)
+  exploit        :   9117 ( 91.2%)
+  escalate       :    585 (  5.8%)
+  impact         :      0 (  0.0%)
+
+Exploit Types:
+  Brute     :   7815 ( 85.7%)
+  Haraka    :    780 (  8.6%)
+  Eternal   :    412 (  4.5%)
+  FTP       :    110 (  1.2%)
+
+Top Targeted Hosts:
+  ent0           :   4521
+  ent1           :   3392
+  user3          :    999
+  user2          :    677
+  user1          :    247
+
+================================================================================
+END OF REPORT
